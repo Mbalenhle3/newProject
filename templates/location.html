@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Location</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVdPLvm3eh5O4TyCCDhL76qzNJ9bVkCZc&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            // The location of the gym
+            var gymLocation = { lat: -28.8587, lng: 31.8406 }; // Replace with actual gym coordinates
+            // The map, centered at the gym location
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15, // Adjust the zoom level as needed
+                center: gymLocation
+            });
+            // The marker, positioned at the gym location
+            var marker = new google.maps.Marker({ position: gymLocation, map: map });
+        }
+    </script>
+    <style>
+        #map {
+            height: 400px;  /* Set the height of the map */
+            width: 100%;    /* The width of the map */
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Us Here</h1>
+    <div id="map"></div>
+</body>
+</html>

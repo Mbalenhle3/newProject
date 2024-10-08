@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Slot</title>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('{% static "assets/img/background.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Overlay for background */
+            z-index: 1; /* Overlay above background */
+        }
+
+        .container {
+            position: relative; /* To position content above overlay */
+            z-index: 2; /* Ensure content is above overlay */
+            max-width: 800px; /* Max width for the content */
+            width: 90%; /* Responsive width */
+            padding: 40px; /* Padding for the container */
+            background: rgba(255, 255, 255, 0.1); /* Light background for contrast */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 60vh; /* Ensure buttons stay at the bottom */
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        .slot {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .slot:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .slot span {
+            display: inline-block;
+        }
+
+        .slot .radio-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .slot i {
+            margin-right: 10px;
+            color: #007bff;
+            font-size: 1.5em;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Overlay for the background -->
+    <div class="container">
+        <h2>Available Slots</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {% for slot in available_slots %}
+                <div class="slot">
+                    <span>
+                        {{ slot.time_slot|date:"Y-m-d H:i" }} - {{ slot.current_members }}/{{ slot.max_members }} booked
+                    </span>
+                    <div class="radio-wrapper">
+                        {% if slot.is_full %}
+                            <span>(Full)</span>
+                        {% else %}
+                            <i class="fas fa-check-circle"></i> <!-- Icon for booking -->
+                            <input type="radio" name="slot_id" value="{{ slot.id }}" required> Book this slot
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <div class="buttons" style="display: flex; justify-content: space-between;">
+                <button type="submit" class="btn">Book Slot</button>
+                <a href="/" class="btn">Back to Home</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+    /* Ensure content fits the screen */
+    body {
+        background-color: white; /* White background for the entire page */
+        color: black; /* Black text */
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    /* Make rows responsive */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    /* Responsive columns */
+    .col-md-4, .col-md-8 {
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .col-md-4 {
+        flex: 1 1 100%; /* Default to full width on small screens */
+    }
+
+    .col-md-8 {
+        flex: 1 1 100%; /* Default to full width on small screens */
+    }
+
+    /* On larger screens, adjust column widths */
+    @media (min-width: 768px) {
+        .col-md-4 {
+            flex: 1 1 33.3333%;
+        }
+
+        .col-md-8 {
+            flex: 1 1 66.6666%;
+        }
+    }
+
+    /* List group styles */
+    .list-group-item {
+        background-color: #e7f1ff; /* Light blue background for list items */
+        color: black; /* Black text */
+        margin-bottom: 10px;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #b3d7ff; /* Light blue border */
+    }
+
+    /* Table responsiveness */
+    .table-container {
+        overflow-x: auto; /* Allow horizontal scrolling on small screens */
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #e7f1ff; /* Light blue background for table */
+        color: black; /* Black text */
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #b3d7ff; /* Light blue border for table cells */
+    }
+
+    /* Responsive font sizes */
+    h1, h2, h5 {
+        color: black; /* Black headers */
+        font-size: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+        h5 {
+            font-size: 1.25rem;
+        }
+    }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Enrollment Details</h1>
+            {% for post in posts %}
+            <ul class="list-group">
+                <li class="list-group-item"><h5>Name : {{post.FullName}}</h5></li>
+                <li class="list-group-item"><h5>Email : {{post.Email}}</h5></li>
+                <li class="list-group-item"><h5>Gender : {{post.Gender}}</h5></li>
+                <li class="list-group-item"><h5>PhoneNumber : {{post.PhoneNumber}}</h5></li>
+                <li class="list-group-item"><h5>DOB : {{post.DOB}}</h5></li>
+                <li class="list-group-item"><h5>Membership plan : {{post.SelectMembershipplan}}</h5></li>
+                <li class="list-group-item"><h5>Trainer : {{post.SelectTrainer}}</h5></li>
+                <li class="list-group-item"><h5>Reference : {{post.Reference}}</h5></li>
+                <li class="list-group-item"><h5>Address : {{post.Address}}</h5></li>
+                <li class="list-group-item"><h5>Payment Status : {{post.paymentStatus}}</h5></li>
+                <li class="list-group-item"><h5>Amount Paid : {{post.Price}}</h5></li>
+                <li class="list-group-item"><h5>Upcoming Due Date : {{post.DueDate}}</h5></li>
+                <li class="list-group-item"><h5>Joining date : {{post.timeStamp}}</h5></li>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

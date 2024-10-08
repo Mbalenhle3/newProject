@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <p>Here are some statistics for the website:</p>
+
+    <div class="dashboard-stats">
+        <div class="stat-box">
+            <h3>Total Users</h3>
+            <p>{{ total_users }}</p>
+        </div>
+        <div class="stat-box">
+            <h3>Active Gym Memberships</h3>
+            <p>{{ active_memberships }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<canvas id="myChart" width="400" height="200"></canvas>

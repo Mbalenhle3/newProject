@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Rules</title>
+
+    <style>
+        /* Add your CSS styles here */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('{% static "assets/img/background.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: 'Arial', sans-serif; /* Change to a modern font */
+            font-size: 16px; /* Base font size for body text */
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            width: 90%;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2.5em; /* Increase size for h2 */
+            margin-bottom: 20px; /* Space below */
+            animation: fadeIn 1s ease;
+        }
+
+        h3 {
+            font-size: 2em; /* Increase size for h3 */
+            margin-top: 20px; /* Space above */
+            animation: slideIn 1s ease;
+        }
+
+        p {
+            font-size: 1.2em; /* Increase size for paragraphs */
+            line-height: 1.5; /* Improve line spacing */
+        }
+
+        .btn-primary {
+            font-size: 1.2em; /* Increase size for buttons */
+            padding: 10px 20px; /* Adjust padding */
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #007bff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Overlay for the background -->
+    <div class="container">
+        
+        {% if gym_rule %}
+            <h3>{{ gym_rule.title }}</h3>
+            <p>{{ gym_rule.description }}</p>
+            {% if gym_rule.file %}
+                <a href="{{ gym_rule.file.url }}" class="btn btn-primary" download>Download Gym Rules</a>
+            {% endif %}
+        {% else %}
+            <p>No gym rules available.</p>
+        {% endif %}
+        <a href="/" class="btn btn-secondary" style="margin-top: 20px;">Back to Home</a>
+    </div>
+
+    <!-- JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('{% static "assets/img/background.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: 'Arial', sans-serif; /* Modern font */
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Overlay for background */
+            z-index: 1; /* Overlay above background */
+        }
+
+        .container {
+            position: relative; /* To position content above overlay */
+            z-index: 2; /* Ensure content is above overlay */
+            max-width: 600px; /* Increase max width */
+            width: 90%; /* Responsive width */
+            padding: 50px; /* Increase padding for more space */
+            background: rgba(255, 255, 255, 0.1); /* Light background for contrast */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); /* Shadow */
+            text-align: center; /* Center align text */
+            animation: fadeIn 1s ease; /* Animation for fade-in */
+        }
+
+        h2 {
+            font-size: 3em; /* Increase size for h2 */
+            margin-bottom: 20px; /* Space below */
+            animation: slideIn 1s ease; /* Slide-in animation */
+        }
+
+        p {
+            font-size: 1.5em; /* Increase size for paragraph */
+            margin: 20px 0; /* Space around paragraph */
+        }
+
+        .btn {
+            background: #007bff; /* Button color */
+            color: white; /* Text color */
+            padding: 15px 20px; /* Button padding */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer on hover */
+            display: inline-block; /* Make it behave like a button */
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+            font-size: 1.2em; /* Larger font size for the button */
+        }
+
+        .btn:hover {
+            background: #0056b3; /* Darker color on hover */
+            transform: scale(1.05); /* Slight scale effect */
+        }
+
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Overlay for the background -->
+    <div class="container">
+        <h2>Success!</h2>
+        <p>Your receipt has been submitted successfully.</p>
+        <a href="/" class="btn">Back to Home</a>  <!-- Back to Home button -->
+    </div>
+</body>
+</html>

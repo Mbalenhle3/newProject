@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Procedures</title>
+
+    <style>
+        /* Add your CSS styles here */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('{% static "assets/img/background.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: 'Arial', sans-serif; /* Change to a modern font */
+            font-size: 16px; /* Base font size for body text */
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Overlay for background */
+            z-index: 1; /* Overlay above background */
+        }
+
+        .container {
+            position: relative; /* To position content above overlay */
+            z-index: 2; /* Ensure content is above overlay */
+            max-width: 800px; /* Max width for the content */
+            width: 90%; /* Responsive width */
+            padding: 30px; /* Padding */
+            background: rgba(255, 255, 255, 0.1); /* Background for contrast */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow */
+        }
+
+        h2 {
+            font-size: 2.5em; /* Increase size for h2 */
+            margin-bottom: 20px; /* Space below */
+            animation: fadeIn 1s ease; /* Fade-in animation */
+        }
+
+        h3 {
+            font-size: 2em; /* Increase size for h3 */
+            margin-top: 20px; /* Space above */
+            animation: slideIn 1s ease; /* Slide-in animation */
+        }
+
+        p {
+            font-size: 1.2em; /* Increase size for paragraphs */
+            line-height: 1.5; /* Improve line spacing */
+        }
+
+        .btn-primary {
+            font-size: 1.2em; /* Increase size for buttons */
+            padding: 10px 20px; /* Adjust padding */
+            transition: background-color 0.3s ease; /* Button transition */
+        }
+
+        .btn-primary:hover {
+            background-color: #007bff; /* Hover color */
+            transform: scale(1.05); /* Slight scale effect */
+        }
+
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Overlay for the background -->
+    <div class="container">
+        <h2>Payment Procedures</h2>
+        {% if payment_procedure %}
+            <h3>{{ payment_procedure.title }}</h3>
+            <p>{{ payment_procedure.description }}</p>
+            {% if payment_procedure.file %}
+                <a href="{{ payment_procedure.file.url }}" class="btn btn-primary" download>Download Payment Procedure</a>
+            {% endif %}
+        {% else %}
+            <p>No payment procedures available.</p>
+        {% endif %}
+        <a href="/" class="btn btn-secondary" style="margin-top: 20px;">Back to Home</a>
+    </div>
+
+    <!-- JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+</body>
+</html>
