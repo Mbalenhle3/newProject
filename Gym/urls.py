@@ -5,12 +5,13 @@ from .views import submit_receipt
 from .views import submit_receipt, receipt_success
 from .views import notify_users
 from django.contrib.auth import views as auth_views
+from .views import handlelogin
 
 
 urlpatterns = [
     path('',views.Home,name="Home"),
     path('signup',views.signup,name="signup"),
-    path('login',views.handlelogin,name="handlelogin"),
+    path('login/',views.handlelogin,name="handlelogin"),
     path('logout',views.handleLogout,name="handleLogout"),
     path('rules',views.rules,name="Gym rules"),
     path('survey',views.survey,name="Gym Survey"),
@@ -31,6 +32,7 @@ urlpatterns = [
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
     path('available_slots/', views.available_slots, name='available_slots'),  # List of slots to book
     path('book_slot/<int:slot_id>/', views.book_slot, name='book_slot'),  # Booking a specific slot
+    
     
 ]
 

@@ -32,8 +32,8 @@ admin.site.register(Enrollment)
 admin.site.register(MembershipPlan)
 admin.site.register(Attendance)
 admin.site.register(Trainer)
-
 admin.site.register(GymRule)
+
 class GymNoticeAdmin(admin.ModelAdmin):
     list_display = ('title', 'created_at') 
 admin.site.register(GymNotice, GymNoticeAdmin)

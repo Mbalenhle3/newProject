@@ -67,39 +67,42 @@ class ReceiptSubmission(models.Model):
         return f"Receipt submitted by {self.user.username} on {self.submitted_at.strftime('%Y-%m-%d')}"
 
 
-class Enrollment(models.Model):        
-    FullName=models.CharField(max_length=25)
-    Email=models.EmailField()
-    Gender=models.CharField(max_length=25)
-    PhoneNumber=models.CharField(max_length=12)
-    DOB=models.CharField(max_length=50)
-    SelectMembershipplan=models.CharField(max_length=200)
-    SelectTrainer=models.CharField(max_length=55)
-    Reference=models.CharField(max_length=55)
-    Address=models.TextField()
-    paymentStatus=models.CharField(max_length=55,blank=True,null=True)
-    Price=models.IntegerField(max_length=55,blank=True,null=True)
-    DueDate=models.DateTimeField(blank=True,null=True)
-    timeStamp=models.DateTimeField(auto_now_add=True,blank=True,)
+class Trainer(models.Model):
+    name = models.CharField(max_length=55)
+    gender = models.CharField(max_length=25)
+    phone = models.CharField(max_length=25)
+    salary = models.IntegerField()  # Removed max_length
+    timeStamp = models.DateTimeField(auto_now_add=True, blank=True)
+    def __str__(self):
+        return self.name
 
+class Enrollment(models.Model):
+    FullName = models.CharField(max_length=25)
+    Email = models.EmailField()
+    Gender = models.CharField(max_length=25)
+    PhoneNumber = models.CharField(max_length=12)
+    DOB = models.CharField(max_length=50)
+    SelectMembershipplan = models.CharField(max_length=200)
+    SelectTrainer = models.CharField(max_length=55)
+    Reference = models.CharField(max_length=55)
+    Address = models.TextField()
+    paymentStatus = models.CharField(max_length=55, blank=True, null=True)
+    Price = models.IntegerField(blank=True, null=True)  # Removed max_length
+    DueDate = models.DateTimeField(blank=True, null=True)
+    timeStamp = models.DateTimeField(auto_now_add=True, blank=True)
     def __str__(self):
         return self.FullName
+
     
 class MembershipPlan(models.Model):
-    plan=models.CharField(max_length=185)
-    price=models.IntegerField(max_length=55)
+    plan = models.CharField(max_length=50, default='Basic Plan')  # Add a default value
+    price = models.IntegerField()
+
+
 
     def __int__(self):
         return self.id
 
-class Trainer(models.Model):
-    name=models.CharField(max_length=55)
-    gender=models.CharField(max_length=25)
-    phone=models.CharField(max_length=25)
-    salary=models.IntegerField(max_length=25)
-    timeStamp=models.DateTimeField(auto_now_add=True,blank=True)
-    def __str__(self):
-        return self.name
 
 class Attendance(models.Model):
     Selectdate=models.DateTimeField(auto_now_add=True)
@@ -121,7 +124,9 @@ class GymSlot(models.Model):
     duration = models.PositiveIntegerField(help_text="Duration in minutes")
     max_capacity = models.PositiveIntegerField(default=10)  # Maximum members allowed
     bookings_count = models.PositiveIntegerField(default=0)  # Track how many members have booked
-
+    booked_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    is_available = models.BooleanField(default=True)
+    
     def __str__(self):
         return f"{self.date} at {self.time} ({self.duration} min)"
 

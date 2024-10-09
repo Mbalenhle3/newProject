@@ -12,9 +12,16 @@ from .models import PaymentProcedure
 from .models import GymRule
 from .models import GymNotice,MembershipPlan,Enrollment,Trainer,Attendance
 from django.core.mail import send_mail
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import logout
+from django.db import transaction
+from .models import GymSlot
+from django.contrib.auth import authenticate
+
+
 
 # Create your views here.
 def Home(request):
@@ -101,35 +108,76 @@ def signup(request):
         send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
         messages.success(request, "User is Created. Please Login")
-        return redirect('/login')
+        return redirect('handlelogin')
         
     return render(request, "signup.html")
 
 
 
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.shortcuts import redirect, render
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 def handlelogin(request):
-    if request.method=="POST":        
-        username=request.POST.get('usernumber')
-        pass1=request.POST.get('pass1')
-        myuser=authenticate(username=username,password=pass1)
-        if myuser is not None:
-            login(request,myuser)
-            messages.success(request,"Login Successful")
-            return redirect('/')
+    if request.method == "POST":
+        username = request.POST.get('usernumber')
+        password = request.POST.get('pass1')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Login Successful")
+
+            # Check for next page in session and redirect accordingly
+            next_page = request.session.get('next', 'available_slots')
+            print(f"Redirecting to: {next_page}")  # Debug info
+            request.session['next'] = 'available_slots'  # Reset after use
+            return redirect(next_page)
         else:
-            messages.error(request,"Invalid Credentials")
-            return redirect('/login')
-            
-        
-    return render(request,"handlelogin.html")
+            messages.error(request, "Invalid Credentials")
+            return redirect('handlelogin')
+    return render(request, "handlelogin.html")
+
+
+
+
+
 
 
 def handleLogout(request):
     logout(request)
-    messages.success(request,"Logout Success")    
-    return redirect('/login')
+    messages.info(request, "You have successfully logged out.")
+    return redirect('handlelogin')
 
 
+def process_booking(user, slot_id):
+    try:
+        with transaction.atomic():
+            slot = GymSlot.objects.select_for_update().get(pk=slot_id)
+            if slot.is_available:
+                slot.booked_by = user
+                slot.is_available = False
+                slot.save()
+
+                # Send confirmation email
+                send_mail(
+                    'Booking Confirmation',
+                    f'Hi {user.username},\n\nYour booking for slot {slot_id} is confirmed.',
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    fail_silently=False,
+                )
+
+                return "Booking Successful"
+            else:
+                return "Slot already booked"
+    except GymSlot.DoesNotExist:
+        return "Slot does not exist"
+    except Exception as e:
+        return str(e)
 
 
 
@@ -169,7 +217,7 @@ def receipt_success(request):
 def enroll(request):
     if not request.user.is_authenticated:
         messages.warning(request,"Please Login and Try Again")
-        return redirect('/login')
+        return redirect('handlelogin')
 
     Membership=MembershipPlan.objects.all()
     SelectTrainer=Trainer.objects.all()
@@ -196,7 +244,7 @@ def enroll(request):
 def profile(request):
     if not request.user.is_authenticated:
         messages.warning(request,"Please Login and Try Again")
-        return redirect('/login')
+        return redirect('handlelogin')
     user_phone=request.user
     posts=Enrollment.objects.filter(PhoneNumber=user_phone)
     attendance=Attendance.objects.filter(phonenumber=user_phone)
@@ -207,7 +255,7 @@ def profile(request):
 def attendance(request):
     if not request.user.is_authenticated:
         messages.warning(request,"Please Login and Try Again")
-        return redirect('/login')
+        return redirect('handlelogin')
     SelectTrainer=Trainer.objects.all()
     context={"SelectTrainer":SelectTrainer}
     if request.method=="POST":
@@ -282,30 +330,19 @@ from django.contrib import messages
 from .models import GymSlot, Booking
 
 def book_slot(request, slot_id):
-    slot = get_object_or_404(GymSlot, id=slot_id)
-    user = request.user
+    if not request.user.is_authenticated:
+        messages.info(request, "Please log in to book a slot.")
+        request.session['next'] = f'book_slot/{slot_id}'  # Save the intended slot in session
+        print(f"Next page set to: book_slot/{slot_id}")  # Debug info
+        return redirect('handlelogin')
 
     if request.method == "POST":
-        # Check if user has already booked this slot
-        if Booking.objects.filter(user=user, slot=slot).exists():
-            messages.error(request, "You have already booked this slot.")
-            return redirect('available_slots')
+        message = process_booking(request.user, slot_id)
+        messages.add_message(request, messages.INFO, message)
+        return redirect('available_slots')
+    return render(request, 'book_slot.html')
 
-        # Create the booking
-        Booking.objects.create(user=user, slot=slot)
-        slot.bookings_count += 1
-        slot.save()
 
-        # Send confirmation email
-        subject = 'Booking Confirmation'
-        message = f'Your booking for {slot.date} at {slot.time} has been confirmed.'
-        from_email = 'your_email@gmail.com'  # Replace with your email
-        send_mail(subject, message, from_email, [user.email])
-
-        # Render booking confirmation page with slot details
-        return render(request, "booking_confirmation.html", {'slot': slot})
-
-    return render(request, "book_slot.html", {'slot': slot})
 
 
 
@@ -316,18 +353,17 @@ from .models import GymSlot, UserProfile
 def available_slots(request):
     user = request.user
 
-    # Check if the user is authenticated
     if not user.is_authenticated:
-        return redirect('login')
+        messages.info(request, "Please log in to book a slot.")
+        return redirect('handlelogin')
 
-    # Check if the user is verified
     user_profile = UserProfile.objects.get(user=user)
     
     if not user_profile.is_verified:
-        # Display a message to contact admin and prevent access
         messages.error(request, "You are not allowed to book a slot. Please contact an admin.")
         return redirect('Home')  # Redirect to the home page or another page
     
-    # If user is verified, show available slots
     slots = GymSlot.objects.all()  # Get all available gym slots
     return render(request, 'available_slots.html', {'slots': slots})
+
+

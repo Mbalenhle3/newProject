@@ -159,3 +159,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Use the same email as the sender
 LOGIN_REDIRECT_URL = '/'  # Redirect to home after login
 # or
 LOGIN_REDIRECT_URL = '/admin/'  # Redirect to the admin panel after login
+LOGIN_URL = 'login'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+SESSION_COOKIE_AGE = 1209600  # Set cookie age to 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True  # Save session to database on every request
